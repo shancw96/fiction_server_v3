@@ -23,7 +23,7 @@ const chapterUrl = "https://www.fpzw.com/xiaoshuo/54/54166/";
 const contentUrl = "https://www.fpzw.com/xiaoshuo/54/54166/10482487.html";
 
 // asyncFetch(filterChapter, chapterUrl).then(res => console.log(res));
-asyncFetch(filterContent, contentUrl).then(res => console.log(res));
+// asyncFetch(filterContent, contentUrl).then(res => console.log(res));
 // const fetchChapter = asyncFetch(filterChapter,chapterUrl)
 function asyncFetch(fn, url) {
   return new Promise((resolve, reject) => {
@@ -62,33 +62,38 @@ function filterContent(html) {
 
 function filterSearch(html) {
   const $ = cheerio.load(html);
-  let searchList = {
-    title: $("tr")
-      .children("td")
-      .eq(0)
-      .children("a")
-      .text(),
-
-    chapterList: $("tr")
-      .children("td")
-      .eq(1)
-      .children("a")
-      .attr("href"),
-    author: $("tr")
-      .children("td")
-      .eq(2)
-      .text(),
-    update: $("tr")
-      .children("td")
-      .eq(4)
-      .text(),
-    isDone: $("tr")
-      .children("td")
-      .eq(5)
-      .text()
-  };
-
-  return searchList;
+  const rawSearchList = $("tr").slice(1);
+  return Array(rawSearchList.length)
+    .fill("")
+    .map((_, index) => ({
+      title: rawSearchList
+        .eq(index)
+        .children("td")
+        .eq(0)
+        .children("a")
+        .text(),
+      chapterList: rawSearchList
+        .eq(index)
+        .children("td")
+        .eq(1)
+        .children("a")
+        .attr("href"),
+      author: rawSearchList
+        .eq(index)
+        .children("td")
+        .eq(2)
+        .text(),
+      update: rawSearchList
+        .eq(index)
+        .children("td")
+        .eq(4)
+        .text(),
+      isDone: rawSearchList
+        .eq(index)
+        .children("td")
+        .eq(5)
+        .text()
+    }));
 }
 
 function filterChapter(html) {
@@ -102,3 +107,5 @@ function filterChapter(html) {
     }));
   return testArr;
 }
+
+module.exports = [asyncFetch, filterSearch, searchUrl];

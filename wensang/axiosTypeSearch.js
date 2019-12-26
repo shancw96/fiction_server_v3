@@ -2,25 +2,26 @@ const Formdata = require("form-data");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-let form = new Formdata();
-form.append("action", "search");
-form.append("q", "测试");
-
-const headers = form.getHeaders();
-
 const contentUrl = "https://www.wensang.com/book/121643/0.html";
 const chapterListUrl = "https://www.wensang.com/book/121643/";
 
-async function wensangPostSearch() {
+const searchUrl = "https://www.wensang.com/home/search";
+
+async function asyncPostSearch(fn, keyword, url) {
+  let form = new Formdata();
+  const headers = form.getHeaders();
+  form.append("action", "search");
+  form.append("q", keyword);
+
   let myRes = await axios.request({
-    url: "https://www.wensang.com/home/search",
+    url: url,
     method: "post",
     data: form,
     timeout: 10 * 1000,
     headers
   });
-  let res = filterSearch(myRes.data);
-  console.log(res);
+
+  return fn(myRes.data);
 }
 
 async function asyncGetFetch(fn, url) {
@@ -76,8 +77,6 @@ function filterSearch(html) {
 }
 
 function filterChapter(html) {
-  console.log("---filterChapter");
-  console.log(html);
   const $ = cheerio.load(html);
   const chapterList = $("div#allChapter")
     .children("ul")
@@ -116,10 +115,4 @@ function filterContent(html) {
   return content;
 }
 
-// asyncGetFetch(filterChapter, chapterListUrl).then(res => {
-//   console.log(res);
-// });
-
-asyncGetFetch(filterContent, contentUrl).then(res => {
-  console.log(res);
-});
+module.exports = [asyncPostSearch, filterSearch, searchUrl];
