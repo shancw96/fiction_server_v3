@@ -62,3 +62,37 @@ const filterWebsite = (url, type) => {
 
 const fetchChapterList = fetchContentContainer(hostName);
 ```
+
+## 构建 server
+
+需要的包
+
+```js
+const Koa = require("koa");
+const cors = require("koa2-cors"); //跨域
+const bodyParser = require("koa-bodyparser"); //处理post数据
+const Router = require("koa-router"); //导入router
+```
+
+### 数据获取方式
+
+#### get 方式
+
+get 方式的数据通过 ctx.query 直接获取
+
+```js
+const { keyword } = ctx.query;
+```
+
+#### post 方式
+
+post 方式 需要借助 `koa-bodyparser`包
+
+```js
+//index.js
+const bodyPaser = require("koa-bodyparser");
+server.use(bodyParser());
+
+//在相关js文件中使用
+const userInfo = ctx.request.body;
+```
