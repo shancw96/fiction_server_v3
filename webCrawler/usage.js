@@ -2,13 +2,9 @@ const {
   wensang_search,
   wensang_chapter,
   wensang_content
-} = require("./wensang/axiosTypeSearch");
-const {
-  twoK_search,
-  twoK_chapter,
-  twoK_content
-} = require("./twoK/encodedChar");
-const { getHostName } = require("./utils/common");
+} = require("./wensang");
+const { twoK_search, twoK_chapter, twoK_content } = require("./twoK_");
+const { getHostName } = require("../utils/common");
 
 const mock = {
   wensang: {
