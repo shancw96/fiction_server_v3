@@ -106,14 +106,18 @@ function filterContent(html) {
   const $ = cheerio.load(html);
   const content = {
     text: $("div#BookText").html(),
-    next: $("div.paper-footer")
-      .children("a")
-      .eq(2)
-      .attr("href"),
-    prev: $("div.paper-footer")
-      .children("a")
-      .eq(0)
-      .attr("href")
+    next:
+      "https://www.wensang.com" +
+      $("div.paper-footer")
+        .children("a")
+        .eq(2)
+        .attr("href"),
+    prev:
+      "https://www.wensang.com" +
+      $("div.paper-footer")
+        .children("a")
+        .eq(0)
+        .attr("href")
   };
   return content;
 }

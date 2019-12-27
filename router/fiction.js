@@ -1,11 +1,10 @@
 const Router = require("koa-router");
+const fiction = require("../controller/fiction");
 let router = new Router();
 
 //routes
-router.get("/search", async ctx => {
-  const { keyword } = ctx.query;
-  console.log(keyword);
-  ctx.body = "connected";
-});
+router.get("/search", fiction.getSearch);
+router.get("/getChapterList", fiction.getChapter);
+router.get("/getContent", fiction.getContent);
 
 module.exports = router;

@@ -34,7 +34,7 @@ const asyncFetch = R.curry(function(fn, url) {
 function filterContent(html) {
   const $ = cheerio.load(html);
   const Content = {
-    text: $("p.Text").text(),
+    text: $("p.Text").html(),
     next: `${baseUrl}${$("div.thumb")
       .children("a")
       .eq(0)
