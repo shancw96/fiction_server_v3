@@ -1,13 +1,13 @@
 const Formdata = require("form-data");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const R = require("ramda");
 
 const contentUrl = "https://www.wensang.com/book/121643/0.html";
 const chapterListUrl = "https://www.wensang.com/book/121643/";
-
 const searchUrl = "https://www.wensang.com/home/search";
 
-async function asyncPostSearch(fn, keyword, url) {
+const asyncPostSearch = R.curry(async function(fn, url, keyword) {
   let form = new Formdata();
   const headers = form.getHeaders();
   form.append("action", "search");
@@ -22,12 +22,12 @@ async function asyncPostSearch(fn, keyword, url) {
   });
 
   return fn(myRes.data);
-}
+});
 
-async function asyncGetFetch(fn, url) {
+const asyncGetFetch = R.curry(async function(fn, url) {
   let { data } = await axios.get(url);
   return fn(data);
-}
+});
 
 function filterSearch(html) {
   const $ = cheerio.load(html);
@@ -65,14 +65,17 @@ function filterSearch(html) {
         .children("span")
         .eq(1)
         .text(),
-      chapterList: contentList
-        .eq(index)
-        .children("dd")
-        .eq(0)
-        .children("h3")
-        .eq(0)
-        .children("a")
-        .attr("href")
+
+      chapterList:
+        "https://www.wensang.com" +
+        contentList
+          .eq(index)
+          .children("dd")
+          .eq(0)
+          .children("h3")
+          .eq(0)
+          .children("a")
+          .attr("href")
     }));
 }
 
@@ -102,7 +105,7 @@ function filterChapter(html) {
 function filterContent(html) {
   const $ = cheerio.load(html);
   const content = {
-    text: $("div#BookText").text(),
+    text: $("div#BookText").html(),
     next: $("div.paper-footer")
       .children("a")
       .eq(2)
@@ -115,4 +118,10 @@ function filterContent(html) {
   return content;
 }
 
-module.exports = [asyncPostSearch, filterSearch, searchUrl];
+//对外暴露
+//wensang_search :: String -> Array
+const wensang_search = asyncPostSearch(filterSearch, searchUrl);
+
+const wensang_chapter = asyncGetFetch(filterChapter);
+const wensang_content = asyncGetFetch(filterContent);
+module.exports = { wensang_search, wensang_chapter, wensang_content };

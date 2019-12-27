@@ -1,31 +1,20 @@
 const iconv = require("iconv-lite");
 const cheerio = require("cheerio");
 const https = require("https");
-const axios = require("axios");
-function transferGbkString(str) {
-  const buffer = iconv.encode(str, "gbK");
-  let temp = "";
-  for (let i = 0; i < buffer.length; i++) {
-    temp += `%${buffer[i].toString(16)}`;
-  }
-  return temp.toUpperCase();
-}
+const R = require("ramda");
+const { transferGbkToBuffer } = require("../utils/common");
 
+//URL base
 const baseUrl = "https://www.fpzw.com";
-
+//URL_search
 const twoKSearch = "/modules/article/search.php?searchtype=keywords&searchkey=";
-const keyWord = transferGbkString("测试");
-const searchUrl = `${baseUrl}${twoKSearch}${keyWord}`;
 
-const chapter = "/xiaoshuo/54/54166/";
+//URL_chapter
 const chapterUrl = "https://www.fpzw.com/xiaoshuo/54/54166/";
-
+//URL_content
 const contentUrl = "https://www.fpzw.com/xiaoshuo/54/54166/10482487.html";
 
-// asyncFetch(filterChapter, chapterUrl).then(res => console.log(res));
-// asyncFetch(filterContent, contentUrl).then(res => console.log(res));
-// const fetchChapter = asyncFetch(filterChapter,chapterUrl)
-function asyncFetch(fn, url) {
+const asyncFetch = R.curry(function(fn, url) {
   return new Promise((resolve, reject) => {
     https
       .get(url, res => {
@@ -40,11 +29,10 @@ function asyncFetch(fn, url) {
       })
       .on("error", err => reject(`asyncFetch Error:${err}`));
   });
-}
+});
 
 function filterContent(html) {
   const $ = cheerio.load(html);
-  //   console.log($);
   const Content = {
     text: $("p.Text").text(),
     next: `${baseUrl}${$("div.thumb")
@@ -108,4 +96,13 @@ function filterChapter(html) {
   return testArr;
 }
 
-module.exports = [asyncFetch, filterSearch, searchUrl];
+//twoKSearch ::String -> Array
+const twoK_search = rawKeyword =>
+  asyncFetch(
+    filterSearch,
+    `${baseUrl}${twoKSearch}${transferGbkToBuffer(rawKeyword)}`
+  );
+
+const twoK_chapter = asyncFetch(filterChapter);
+const twoK_content = asyncFetch(filterContent);
+module.exports = { twoK_search, twoK_chapter, twoK_content };
