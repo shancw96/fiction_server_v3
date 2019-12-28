@@ -58,11 +58,11 @@ const filterWebsite = curry((type, url) => {
 
 //   filterWebsite("chapter", mock.twoK.chapterUrl);
 //   filterWebsite("content", mock.wensang.contentUrl);
-fetchSearchResult(
-  "遮天",
+
+module.exports = {
+  fetchSearchResult,
+  filterWebsite,
   wensang_search,
   twoK_search,
   biquge_search
-).then(res => console.log(res));
-
-module.exports = { fetchSearchResult, filterWebsite };
+};
