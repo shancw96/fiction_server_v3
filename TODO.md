@@ -96,3 +96,14 @@ server.use(bodyParser());
 //在相关js文件中使用
 const userInfo = ctx.request.body;
 ```
+
+## 爬取注意事项
+
+- twoK 的搜索页面 没显示图片，需要去章节列表页获取，
+
+所以将图片获取更改为章节列表页获取
+
+- 使用 Promise.race 可能会导致正确的列表，没有竞争过错误的
+  解决方案：
+  默认全部搜索，分 tab 栏展示，tab 栏可以滑动。
+  可以指定某个网站

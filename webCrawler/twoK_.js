@@ -80,6 +80,12 @@ function filterSearch(html) {
         .eq(index)
         .children("td")
         .eq(5)
+        .text(),
+      newChapter: rawSearchList
+        .eq(index)
+        .children("td")
+        .eq(1)
+        .children("a")
         .text()
     }));
 }
@@ -87,13 +93,12 @@ function filterSearch(html) {
 function filterChapter(html) {
   const $ = cheerio.load(html);
   const chapterList = $("dd").children("a");
-  const testArr = Array(chapterList.length)
+  return Array(chapterList.length)
     .fill("")
     .map((_, index) => ({
       title: chapterList.eq(index).text(),
       href: `${chapterUrl}${chapterList.eq(index).attr("href")}`
     }));
-  return testArr;
 }
 
 //twoKSearch ::String -> Array
