@@ -112,10 +112,12 @@ function filterChapter(html) {
                 .children("a")
                 .children("span")
                 .text(),
-            href: chapterList
-                .eq(index)
-                .children("a")
-                .attr("href")
+            href:
+                BaseUrl +
+                chapterList
+                    .eq(index)
+                    .children("a")
+                    .attr("href")
         }));
     return testArr;
 }
@@ -130,12 +132,9 @@ function filterContent(html) {
                 .children("a")
                 .eq(2)
                 .attr("href"),
-        prev:
-            "https://www.wensang.com" +
-            $("div.paper-footer")
-                .children("a")
-                .eq(0)
-                .attr("href")
+        curTitle: $("div.paper-box.paper-article")
+            .children("h1")
+            .text()
     };
     return content;
 }
