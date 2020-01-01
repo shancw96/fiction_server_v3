@@ -7,7 +7,7 @@ const router = require("./router/root");
 const static = require("koa-static");
 const fs = require("fs");
 const path = require("path");
-const diskPath = "../oh-my-fiction-v3/oh-my-fiction-dist";
+const staticPath = "../oh-my-fiction-v3/oh-my-fiction-dist";
 
 const PORT = 4008;
 const server = new Koa();
@@ -16,14 +16,11 @@ server.listen(PORT, () => {
     console.log(`new fiction server start at port:${PORT}`);
 });
 
-router.get(
-    "/",
-    ctx =>
-        (ctx.body = fs.readFileSync(
-            path.resolve(__dirname, "../oh-my-fiction-v3/oh-my-fiction-dist/index.html"),
-            "utf-8"
-        ))
-);
+router.get("/", ctx => {
+    let html = fs.readFileSync(path.resolve(__dirname, "../fiction-search-v3/oh-my-fiction-dist/index.html"), "utf-8");
+    console.log(html);
+    ctx.body = html;
+});
 
 server
     .use(bodyParser())
