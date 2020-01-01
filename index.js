@@ -4,10 +4,10 @@ const bodyParser = require("koa-bodyparser");
 const router = require("./router/root");
 
 //static source import
-const static = require("koa-static");
 const fs = require("fs");
 const path = require("path");
-const staticPath = "../oh-my-fiction-v3/oh-my-fiction-dist";
+const static = require("koa-static"); //静态资源
+const staticPath = "../fiction-search-v3/oh-my-fiction-dist/";
 
 const PORT = 4008;
 const server = new Koa();
@@ -25,6 +25,6 @@ router.get("/", ctx => {
 server
     .use(bodyParser())
     .use(cors())
-    .use(static(path.join(__dirname, diskPath)))
+    .use(static(path.join(__dirname, staticPath)))
     .use(router.routes())
     .use(router.allowedMethods());
