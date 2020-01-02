@@ -103,7 +103,7 @@ function filterChapter(html) {
         .fill("")
         .map((_, index) => ({
             title: chapterList.eq(index).text(),
-            href: `${chapterUrl}${chapterList.eq(index).attr("href")}`
+            href: `${chapterList.eq(index).attr("href")}`
         }));
 }
 
