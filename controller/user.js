@@ -1,4 +1,5 @@
 const { dbHandler, close } = require("../db/index");
+const stdout = require('shancw-stdout')
 /**
  * 查询到结果：status:success , data:{...}
  * 未查询到结果:status:fail ,data:null
@@ -19,8 +20,21 @@ const login = async ctx => {
  */
 const register = async ctx => {
     const { userName, passwd } = ctx.request.body;
-    let queryResult = await dbHandler.findOne({ userName, passwd });
-    ctx.body = queryResult ? { status: "success" } : { status: "fail", msg: "用户名已存在" };
+    let queryResult = await dbUser.findOne({ userName, passwd });
+    if(queryResult){
+        console.log(queryResult)
+        ctx.body ={ status: "fail", msg: "用户名已存在" };
+    }else{
+        //插入
+        try{
+            await dbUser.save({userName,passwd})
+            ctx.body = {status:'success'}
+        }catch(e){
+            stdout.red(e)
+            ctx.body = e
+        }
+    }
+    
 };
 
 module.exports = { login, register };

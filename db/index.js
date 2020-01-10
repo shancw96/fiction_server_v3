@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 module.exports = {
-    dbHandler: new handler(User),
+    dbUser: new handler(User),
     close: () => {
         db.close();
     }
