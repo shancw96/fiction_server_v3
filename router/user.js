@@ -1,12 +1,11 @@
 const Router = require("koa-router");
-const bodyParser = require("koa-bodyparser");
+const User = require("../controller/user");
+
 let router = new Router();
 
 //routes
-router.post("/login", async ctx => {
-  const userInfo = ctx.request.body;
-  console.log(userInfo);
-  ctx.body = "router user connect";
-});
+router.post("/login", User.login);
+
+router.post("/register", User.register);
 
 module.exports = router;
