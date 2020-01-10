@@ -21,6 +21,7 @@
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
+    "koa-send": "^5.0.0",
     "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
     "path": "^0.12.7",
