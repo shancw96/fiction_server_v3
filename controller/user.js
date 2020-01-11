@@ -1,5 +1,6 @@
-const { dbHandler, close } = require("../db/index");
-const stdout = require('shancw-stdout')
+const { dbUser, close } = require("../db/index");
+const stdout = require("shancw-stdout");
+
 /**
  * 查询到结果：status:success , data:{...}
  * 未查询到结果:status:fail ,data:null
@@ -8,7 +9,7 @@ const stdout = require('shancw-stdout')
  */
 const login = async ctx => {
     const { userName, passwd } = ctx.request.body;
-    let queryResult = await dbHandler.findOne({ userName, passwd });
+    let queryResult = await dbUser.findOne({ userName, passwd });
     const status = queryResult ? "success" : "fail";
     ctx.body = { status, data: queryResult };
 };
@@ -21,20 +22,19 @@ const login = async ctx => {
 const register = async ctx => {
     const { userName, passwd } = ctx.request.body;
     let queryResult = await dbUser.findOne({ userName, passwd });
-    if(queryResult){
-        console.log(queryResult)
-        ctx.body ={ status: "fail", msg: "用户名已存在" };
-    }else{
+    if (queryResult) {
+        console.log(queryResult);
+        ctx.body = { status: "fail", msg: "用户名已存在" };
+    } else {
         //插入
-        try{
-            await dbUser.save({userName,passwd})
-            ctx.body = {status:'success'}
-        }catch(e){
-            stdout.red(e)
-            ctx.body = e
+        try {
+            await dbUser.save({ userName, passwd });
+            ctx.body = { status: "success" };
+        } catch (e) {
+            stdout.red(e);
+            ctx.body = e;
         }
     }
-    
 };
 
 module.exports = { login, register };
