@@ -2,6 +2,7 @@ const Koa = require("koa");
 const cors = require("koa2-cors");
 const bodyParser = require("koa-bodyparser");
 const router = require("./router/root");
+const stdout = require("shancw-stdout");
 
 //static source import
 const fs = require("fs");
@@ -13,7 +14,7 @@ const PORT = 4008;
 const server = new Koa();
 
 server.listen(PORT, () => {
-    console.log(`new fiction server start at port:${PORT}`);
+    stdout.bgGreen(`new fiction server start at port:${PORT}`);
 });
 
 router.get("/", ctx => {
@@ -26,5 +27,6 @@ server
     .use(bodyParser())
     .use(cors())
     .use(static(path.join(__dirname, staticPath)))
+    .use(router.allowedMethods())
     .use(router.routes())
-    .use(router.allowedMethods());
+    

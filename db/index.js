@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
             author: String,
             update: String,
             desc: String,
-            tags: [String],
+            tags: [],
             chapterList: [
                 {
                     title: String,
