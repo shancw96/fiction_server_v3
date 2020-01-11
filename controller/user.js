@@ -1,18 +1,16 @@
 const { dbUser, close } = require("../db/index");
 const stdout = require("shancw-stdout");
-const jwt = require('jsonwebtoken')
-const SECRET_KEY = "i am very secret"
+const jwt = require("jsonwebtoken");
+const SECRET_KEY = "i am very secret";
 
-const verifyToken = token=>{
-    try{
-        const {userName,passwd} = jwt.verify(token,SECRET_KEY)
-        stdout.red(`decoded user :${userName} -- ${passwd}`)
-    }catch(e){
-        return false
+const verifyToken = token => {
+    try {
+        const { userName, passwd } = jwt.verify(token, SECRET_KEY);
+        stdout.red(`decoded user :${userName} -- ${passwd}`);
+    } catch (e) {
+        return false;
     }
-    
-
-}
+};
 /**
  * 查询到结果：status:success , data:{...}
  * 未查询到结果:status:fail ,data:null
@@ -24,16 +22,16 @@ const login = async ctx => {
     let queryResult = await dbUser.findOne({ userName, passwd });
     // const status = queryResult ? "success" : "fail";
     // ctx.body = { status, data: queryResult };
-    if(!queryResult){
-        ctx.body = {status:'fail',data:null}
-    }else{
+    if (!queryResult) {
+        ctx.body = { status: "fail", data: null };
+    } else {
         // 生成token
-        const {userName,passwd} = queryResult
-        const token = jwt.sign({userName,passwd},SECRET_KEY,{expiresIn:'1 days'})
-        ctx.body  = {
+        const { userName, passwd } = queryResult;
+        const token = jwt.sign({ userName, passwd }, SECRET_KEY, { expiresIn: "1 days" });
+        ctx.body = {
             token,
-            data:queryResult
-        }
+            data: queryResult
+        };
     }
 };
 /**
@@ -65,49 +63,48 @@ const register = async ctx => {
  * 将token 解析出来后，查询数据库，进行更新操作
  */
 
-const storeToCloud = async ctx=>{
+const storeToCloud = async ctx => {
     //获取用户信息
-    const {books} = ctx.request.body
-    const token = ctx.request.header['authorization']
-    const userInfo  = verifyToken(token)
-    if(!userInfo){
-        ctx.body={
-            status:'fail',
-            msg:"认证失败，请重新登录'"
-        }
-    }else{
-        try{
-            await dbUser.update({userName},{books})
-            ctx.body = {status:'success',msg:'上传成功'}
-        }catch(e){
-            stdout.red(e)
-            ctx.body={
-                status:'fail',
-                msg:e
-            }
-    }
-}
-
-const getFromCloud = async ctx=>{
-    const token = ctx.request.header['authorization']
-    const userInfo = verifyToken(token)
-    if(!userInfo) {
+    const { books } = ctx.request.body;
+    const token = ctx.request.header["authorization"];
+    const userInfo = verifyToken(token);
+    if (!userInfo) {
         ctx.body = {
-            status:'fail',
-            msg:"认证失败，请重新登录'"
-        }
-    }else{
-        try{
-            ctx.body = await dbUser.findOne({...userInfo})
-        }catch(e){
+            status: "fail",
+            msg: "认证失败，请重新登录'"
+        };
+    } else {
+        try {
+            await dbUser.update({ userName }, { books });
+            ctx.body = { status: "success", msg: "上传成功" };
+        } catch (e) {
+            stdout.red(e);
             ctx.body = {
-                status:'fail',
-                msg:"未查询到该用户"
-            }
+                status: "fail",
+                msg: e
+            };
         }
-        
     }
-}
+};
 
+const getFromCloud = async ctx => {
+    const token = ctx.request.header["authorization"];
+    const userInfo = verifyToken(token);
+    if (!userInfo) {
+        ctx.body = {
+            status: "fail",
+            msg: "认证失败，请重新登录'"
+        };
+    } else {
+        try {
+            ctx.body = await dbUser.findOne({ ...userInfo });
+        } catch (e) {
+            ctx.body = {
+                status: "fail",
+                msg: "未查询到该用户"
+            };
+        }
+    }
+};
 
-module.exports = { login, register,storeToCloud,getFromCloud };
+module.exports = { login, register, storeToCloud, getFromCloud };
