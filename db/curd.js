@@ -26,7 +26,7 @@ class Curd {
                     reject(error);
                 } else {
                     stdout.bgMagenta("mongodb:create result");
-
+                    console.log(result)
                     resolve(result);
                 }
             });
@@ -49,7 +49,7 @@ class Curd {
                     reject(error);
                 } else {
                     stdout.bgMagenta("mongodb:save result");
-
+                    console.log(result)
                     resolve(result);
                 }
             });
@@ -74,7 +74,7 @@ class Curd {
                     reject(error);
                 } else {
                     stdout.bgMagenta("mongodb:findAll result");
-
+console.log(results)
                     resolve(results);
                 }
             });
@@ -98,7 +98,7 @@ class Curd {
                     reject(error);
                 } else {
                     stdout.bgMagenta("mongodb:findOne result");
-
+                    console.log(results)
                     resolve(results);
                 }
             });
@@ -144,7 +144,7 @@ class Curd {
                     reject(error);
                 } else {
                     stdout.bgMagenta("mongodb:update result");
-
+console.log(results)
                     resolve(results);
                 }
             });
@@ -166,7 +166,7 @@ class Curd {
                     reject(error);
                 } else {
                     stdout.bgMagenta("mongodb:remove result");
-
+                    console.log(result)
                     resolve(result);
                 }
             });

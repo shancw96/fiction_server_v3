@@ -2,6 +2,7 @@ const { fetchSearchResult, filterWebsite } = require("../webCrawler/index");
 const { recommandFiction } = require("../webCrawler/wensang");
 const { wensang_search, twoK_search, biquge_search } = require("../webCrawler/index");
 const getSearch = async ctx => {
+    console.log(ctx.request.ip)
     const { keyword, accurateSearch } = ctx.query;
     switch (accurateSearch) {
         case "wensang":

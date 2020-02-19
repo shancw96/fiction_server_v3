@@ -5,7 +5,8 @@ const { getHostName } = require("../utils/common");
 const { curry } = require("ramda");
 
 // searchResult ::String -> f1 .. fn ->Promise <pending>
-const fetchSearchResult = (keyword, ...fnArr) => Promise.all(fnArr.map(fn => fn(keyword)));
+const fetchSearchResult  =(keyword, ...fnArr) =>Promise.all(fnArr.map(fn=>fn(keyword)).map(promiseItem=>promiseItem.catch(e=>e)))
+// const fetchSearchResult = (keyword, ...fnArr) => Promise.all(fnArr.map(fn => fn(keyword)));
 
 /**
  * 整合content 与 chapter 函数
@@ -46,6 +47,8 @@ const filterWebsite = curry((type, url) => {
             new Error("invaild url or type");
     }
 });
+
+// fetchSearchResult('遮天',wensang_search, twoK_search).catch(e=>console.log(e))
 
 module.exports = {
     fetchSearchResult,

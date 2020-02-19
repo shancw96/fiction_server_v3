@@ -7,4 +7,5 @@ let router = new Router();
 router.post("/login", User.login);
 router.post("/register", User.register);
 router.post("/storeToCloud", User.storeToCloud);
+router.post('/getFromCloud',User.getFromCloud)
 module.exports = router;

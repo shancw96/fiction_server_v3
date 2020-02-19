@@ -12,6 +12,7 @@ const staticPath = "../fiction-search-v3/oh-my-fiction-dist/";
 
 const PORT = 4008;
 const server = new Koa();
+server.proxy = true;
 
 server.listen(PORT, () => {
     stdout.bgGreen(`new fiction server start at port:${PORT}`);
@@ -19,13 +20,12 @@ server.listen(PORT, () => {
 
 router.get("/", ctx => {
     let html = fs.readFileSync(path.resolve(__dirname, "../fiction-search-v3/oh-my-fiction-dist/index.html"), "utf-8");
-    console.log(html);
     ctx.body = html;
 });
 
 server
-    .use(bodyParser())
     .use(cors())
+    .use(bodyParser())
     .use(static(path.join(__dirname, staticPath)))
     .use(router.allowedMethods())
     .use(router.routes())

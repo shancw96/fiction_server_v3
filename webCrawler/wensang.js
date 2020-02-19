@@ -32,7 +32,7 @@ const asyncGetFetch = R.curry(async function(fn, url) {
 
 function filterSearch(html) {
     const $ = cheerio.load(html);
-    const contentList = $("div.cf").children("dl");
+    const contentList = $("div.ptm-card-content").children("dl");
     return Array(contentList.length)
         .fill("")
         .map((_, index) => ({
@@ -95,6 +95,20 @@ function filterSearch(html) {
                     .children("a")
                     .attr("href")
         }));
+}
+
+function filterSearchMob(html){
+    const $ = cheerio.load(html);
+    const chapterList = $('li.ptm-list-view-cell.ptm-img.ptm-col-xs-4')
+    return Array(chapterList.length).fill("").map((_,index)=>({
+        title:chapterList.eq(index).children('div.ptm-img-body').children('span').children('a').text(),
+        chapterList:BaseUrl +chapterList.eq(index).children('div.ptm-img-body').children('span').children('a').attr('href'),
+        bookHome:BaseUrl +chapterList.eq(index).children('div.ptm-img-body').children('span').children('a').attr('href'),
+        isDone:'',
+        img:'',
+        update:'',
+        author:''
+    }))
 }
 
 function filterChapter(html) {
@@ -216,8 +230,17 @@ function filterBookHome(html) {
 }
 
 //对外暴露
-//wensang_search :: String -> Array
-const wensang_search = asyncPostSearch(filterSearch, searchUrl);
+
+//正常版本
+// const wensang_search = asyncPostSearch(filterSearch, searchUrl);
+
+//hack 版本
+const wensang_search_raw = asyncPostSearch(filterSearchMob, 'http://m.wensang.com/home/search');
+const wensang_search =keyword=> new Promise((resolve,reject)=>{
+    wensang_search_raw(keyword).catch(({response})=>{
+        resolve(filterSearchMob(response.data))
+    })
+})
 
 const wensang_chapter = asyncGetFetch(filterChapter);
 const wensang_content = asyncGetFetch(filterContent);

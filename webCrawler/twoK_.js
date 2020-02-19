@@ -39,10 +39,7 @@ function filterContent(html) {
             .children("a")
             .eq(0)
             .attr("href")}`,
-        perv: `${baseUrl}${$("div.thumb")
-            .children("a")
-            .eq(4)
-            .attr("href")}`
+        curTitle:$('div#content.fonts_mesne').children('h2').text()
     };
 
     return Content;
@@ -162,7 +159,8 @@ function filterBookHome(html) {
 
 //twoKSearch ::String -> Array
 const twoK_search = rawKeyword => asyncFetch(filterSearch, `${baseUrl}${twoKSearch}${transferGbkToBuffer(rawKeyword)}`);
-
+// console.log('run towK')
+//twoK_search('遮天').then(res=>console.log(res),r=>console.log(r))
 const twoK_chapter = asyncFetch(filterChapter);
 const twoK_content = asyncFetch(filterContent);
 const twoK_bookHome = asyncFetch(filterBookHome);

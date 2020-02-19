@@ -7,6 +7,7 @@ const verifyToken = token => {
     try {
         const { userName, passwd } = jwt.verify(token, SECRET_KEY);
         stdout.red(`decoded user :${userName} -- ${passwd}`);
+        return { userName, passwd }
     } catch (e) {
         return false;
     }
@@ -18,17 +19,16 @@ const verifyToken = token => {
  * @param  ctx 处理 登录请求
  */
 const login = async ctx => {
-    const { userName, passwd } = ctx.request.body;
+    const { userName, passwd } = ctx.request.body; 
     let queryResult = await dbUser.findOne({ userName, passwd });
-    // const status = queryResult ? "success" : "fail";
-    // ctx.body = { status, data: queryResult };
     if (!queryResult) {
-        ctx.body = { status: "fail", data: null };
+        ctx.body = { status: "fail", msg:'用户名或密码错误' };
     } else {
         // 生成token
         const { userName, passwd } = queryResult;
         const token = jwt.sign({ userName, passwd }, SECRET_KEY, { expiresIn: "1 days" });
         ctx.body = {
+            status: "success",
             token,
             data: queryResult
         };
@@ -44,13 +44,12 @@ const register = async ctx => {
     const { userName, passwd } = ctx.request.body;
     let queryResult = await dbUser.findOne({ userName, passwd });
     if (queryResult) {
-        console.log(queryResult);
         ctx.body = { status: "fail", msg: "用户名已存在" };
     } else {
         //插入
         try {
             await dbUser.save({ userName, passwd });
-            ctx.body = { status: "success" };
+            ctx.body = { status: "success",msg:'注册成功' };
         } catch (e) {
             stdout.red(e);
             ctx.body = e;
@@ -67,7 +66,9 @@ const storeToCloud = async ctx => {
     //获取用户信息
     const { books } = ctx.request.body;
     const token = ctx.request.header["authorization"];
+    console.log(token)
     const userInfo = verifyToken(token);
+    const {userName} = userInfo
     if (!userInfo) {
         ctx.body = {
             status: "fail",

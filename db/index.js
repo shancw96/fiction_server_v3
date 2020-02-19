@@ -20,6 +20,7 @@ const userSchema = mongoose.Schema({
         {
             title: String,
             author: String,
+            img:String,
             update: String,
             desc: String,
             tags: [],
@@ -28,7 +29,11 @@ const userSchema = mongoose.Schema({
                     title: String,
                     href: String
                 }
-            ]
+            ],
+            recentRead:{
+                href:String,
+                title:String,
+            }
         }
     ]
 });

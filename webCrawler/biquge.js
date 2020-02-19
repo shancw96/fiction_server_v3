@@ -6,34 +6,31 @@ const searchUrl = "https://www.biquge.com.cn/search.php?q=";
 // asyncFetch :: function -> String -> Promise <pending> -> any
 const asyncFetch = curry(async (fn, url) => {
     const { data } = await axios.get(url);
-    //   console.log(data);
     return fn(cheerio.load(data));
 });
 
-const filterContent = $ => ({
-    text: $("div#content").html(),
-    next:
-        baseUrl +
-        $("div.bottem2")
-            .children("a")
-            .eq(2)
-            .attr("href")
-            .slice(1),
-    prev:
-        baseUrl +
-        $("div.bottem2")
-            .children("a")
-            .eq(0)
-            .attr("href")
-            .slice(1)
-});
+const filterContent = $ => {
+    const content =  ({
+        text: $("div#content").html(),
+        next:
+            baseUrl +'/'+
+            $("div.bottem2")
+                .children("a")
+                .eq(2)
+                .attr("href")
+                .slice(1),
+        curTitle:$('div.bookname').children('h1').text()
+    })
+    
+    return content
+}
 
 const filterChapter = $ => {
     const chapterList = $("dd").children("a");
     return Array(chapterList.length)
         .fill("")
         .map((_, index) => ({
-            title: baseUrl + chapterList.eq(index).text(),
+            title:  chapterList.eq(index).text(),
             href: baseUrl + chapterList.eq(index).attr("href")
         }));
 };
