@@ -8,7 +8,7 @@ const contentUrl = "https://www.wensang.com/book/121643/0.html";
 const chapterListUrl = "https://www.wensang.com/book/121643/";
 const searchUrl = "https://www.wensang.com/home/search";
 
-const asyncPostSearch = R.curry(async function(fn, url, keyword) {
+const asyncPostSearch = R.curry(async function (fn, url, keyword) {
     let form = new Formdata();
     const headers = form.getHeaders();
     form.append("action", "search");
@@ -18,14 +18,14 @@ const asyncPostSearch = R.curry(async function(fn, url, keyword) {
         url: url,
         method: "post",
         data: form,
-        timeout: 10 * 1000,
+        timeout: 20 * 1000,
         headers
     });
 
     return fn(myRes.data);
 });
 
-const asyncGetFetch = R.curry(async function(fn, url) {
+const asyncGetFetch = R.curry(async function (fn, url) {
     let { data } = await axios.get(url);
     return fn(data);
 });
