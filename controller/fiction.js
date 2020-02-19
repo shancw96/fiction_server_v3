@@ -1,8 +1,10 @@
 const { fetchSearchResult, filterWebsite } = require("../webCrawler/index");
 const { recommandFiction } = require("../webCrawler/wensang");
 const { wensang_search, twoK_search, biquge_search } = require("../webCrawler/index");
+const { writeToLog } = require('../utils/common')
+const axios = require('axios')
 const getSearch = async ctx => {
-    console.log(ctx.request.ip)
+    axios.get(`http://ip.taobao.com/service/getIpInfo.php?ip=${ctx.request.ip}`).then(ipInfo => writeToLog(JSON.parse(ipInfo)))
     const { keyword, accurateSearch } = ctx.query;
     switch (accurateSearch) {
         case "wensang":
