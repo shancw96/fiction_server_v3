@@ -26,7 +26,10 @@ function writeToLog(ipInfo, ip, path = logPath) {
   }
 
   function writeFile(path, target, content) {
-    fs.writeFileSync(path, JSON.stringify({ ...target, [moment().format('h:mm:ss a')]: content }))
+    fs.writeFile(path, JSON.stringify({ ...target, [moment().format('h:mm:ss a')]: content }), (err) => {
+      if (err) console.log(err)
+      else console.log('已记录ip 信息')
+    })
   }
 }
 const getHostName = website => website.match(/(w+)(\.)([a-z]+)(\.)(com)/)[3]; // ['www.xxx.com','www','.','xxx','.'.'com',.....]
