@@ -1,5 +1,8 @@
 const iconv = require("iconv-lite");
 const path = require('path')
+const fs = require('fs')
+const moment = require('moment')
+const stdout = require("shancw-stdout");
 const logPath = path.resolve(__dirname, '../log')
 //transferGbkToBuffer :: String -> String
 function transferGbkToBuffer(str) {
@@ -12,8 +15,10 @@ function transferGbkToBuffer(str) {
   return temp.toUpperCase();
 }
 function writeToLog(ipInfo, ip, path = logPath) {
+  
   const DayDir = path + '/' + moment().format('YYYY-MM-DD')
-  const ipFile = DayDir + '' + ip + '.json'
+  console.log(DayDir)
+  const ipFile = DayDir + '/' + ip + '.json'
   //创建或确认目录
   if (!fs.existsSync(DayDir)) {
     fs.mkdirSync(DayDir)
@@ -28,7 +33,7 @@ function writeToLog(ipInfo, ip, path = logPath) {
   function writeFile(path, target, content) {
     fs.writeFile(path, JSON.stringify({ ...target, [moment().format('h:mm:ss a')]: content }), (err) => {
       if (err) console.log(err)
-      else console.log('已记录ip 信息')
+      else stdout.bgGreen('已记录ip 信息')
     })
   }
 }
