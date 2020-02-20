@@ -4,10 +4,6 @@ const { wensang_search, twoK_search, biquge_search } = require("../webCrawler/in
 const { writeToLog } = require('../utils/common')
 const axios = require('axios')
 const getSearch = async ctx => {
-    axios.get(`http://ip.taobao.com/service/getIpInfo.php?ip=${ctx.request.ip}`).then(ipInfo =>{
-        console.log(ipInfo.data.data)
-        writeToLog(ipInfo.data.data,ctx.request.ip)
-    })
     const { keyword, accurateSearch } = ctx.query;
     switch (accurateSearch) {
         case "wensang":

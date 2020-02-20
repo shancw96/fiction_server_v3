@@ -3,7 +3,9 @@ const path = require('path')
 const fs = require('fs')
 const moment = require('moment')
 const stdout = require("shancw-stdout");
-const logPath = path.resolve(__dirname, '../log')
+
+
+
 //transferGbkToBuffer :: String -> String
 function transferGbkToBuffer(str) {
   const buffer = iconv.encode(str, "gbK");
@@ -14,10 +16,14 @@ function transferGbkToBuffer(str) {
 
   return temp.toUpperCase();
 }
+
+const logPath = path.join(__dirname, '../log')
+if(!fs.existsSync(logPath)) {
+  fs.mkdirSync(logPath)
+}
+
 function writeToLog(ipInfo, ip, path = logPath) {
-  
   const DayDir = path + '/' + moment().format('YYYY-MM-DD')
-  console.log(DayDir)
   const ipFile = DayDir + '/' + ip + '.json'
   //创建或确认目录
   if (!fs.existsSync(DayDir)) {
@@ -33,9 +39,19 @@ function writeToLog(ipInfo, ip, path = logPath) {
   function writeFile(path, target, content) {
     fs.writeFile(path, JSON.stringify({ ...target, [moment().format('h:mm:ss a')]: content }), (err) => {
       if (err) console.log(err)
-      else stdout.bgGreen('已记录ip 信息')
+      else{
+        stdout.bgGreen('已记录用户ip 信息')
+        stdout.blue(path)
+      }
+
     })
   }
 }
 const getHostName = website => website.match(/(w+)(\.)([a-z]+)(\.)(com)/)[3]; // ['www.xxx.com','www','.','xxx','.'.'com',.....]
-module.exports = { transferGbkToBuffer, getHostName, writeToLog };
+
+function getLogDirList(curPath=logPath){
+  const source = fs.readdirSync(logPath)
+  const res = source.map(name => path.join(curPath, name)).filter(path => fs.lstatSync(path).isDirectory())
+  return res
+}
+module.exports = { transferGbkToBuffer, getHostName, writeToLog,getLogDirList };
