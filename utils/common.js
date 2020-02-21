@@ -49,9 +49,20 @@ function writeToLog(ipInfo, ip, path = logPath) {
 }
 const getHostName = website => website.match(/(w+)(\.)([a-z]+)(\.)(com)/)[3]; // ['www.xxx.com','www','.','xxx','.'.'com',.....]
 
-function getLogDirList(curPath=logPath){
-  const source = fs.readdirSync(logPath)
-  const res = source.map(name => path.join(curPath, name)).filter(path => fs.lstatSync(path).isDirectory())
-  return res
+/**
+ * @description 获取指定目录下的所有
+ * @return {Array} [String,...,String]  String 为目录的绝对路径 | 查询为空:[]
+ */
+function getDirList(curPath){
+  console.log(curPath)
+  return fs
+          .readdirSync(curPath)
+          .map(name => path.join(curPath, name))
+          .filter(path => fs.lstat(path,(err,stat)=>!!err ? false : stat.isDirectory()))
 }
-module.exports = { transferGbkToBuffer, getHostName, writeToLog,getLogDirList };
+function getFileList(curPath){
+  return fs
+          .readdirSync(curPath)
+          .map(name => path.join(curPath, name))
+}
+module.exports = { transferGbkToBuffer, getHostName, writeToLog,getDirList,getFileList };
